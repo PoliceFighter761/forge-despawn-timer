@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+
+[[mods]]
+modId="despawntimer"
+version="${file.jarVersion}"
+displayName="Despawn Timer"
+authors="DespawnTimer"
+description='''
+Extends the despawn timer for items dropped on player death.
+Manual drops, breaking blocks, mob loot, etc. are unaffected.
+
+Default: 60 minutes (configurable 5-1440 via /despawntimer command).
+'''
+
+[[dependencies.despawntimer]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="SERVER"
+
+[[dependencies.despawntimer]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1,1.21)"
+ordering="NONE"
+side="SERVER"
