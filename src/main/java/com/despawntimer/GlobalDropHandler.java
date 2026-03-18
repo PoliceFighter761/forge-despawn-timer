@@ -1,5 +1,6 @@
 package com.despawntimer;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -8,6 +9,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class GlobalDropHandler {
     @SubscribeEvent
     public static void onItemSpawn(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide()) {
+            return;
+        }
+
         if (!(event.getEntity() instanceof ItemEntity item)) {
             return;
         }
@@ -16,7 +21,9 @@ public class GlobalDropHandler {
             return;
         }
 
-        String itemId = ForgeRegistries.ITEMS.getKey(item.getItem().getItem()).toString();
+        ResourceLocation key = ForgeRegistries.ITEMS.getKey(item.getItem().getItem());
+        String itemId = key != null ? key.toString() : null;
+
         item.lifespan = Config.resolveLifespan(itemId,
             Config.GLOBAL_DESPAWN_INFINITE.get(), Config.GLOBAL_DESPAWN_MINUTES.get());
     }

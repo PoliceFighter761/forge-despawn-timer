@@ -1,5 +1,6 @@
 package com.despawntimer;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -20,15 +21,16 @@ public class DeathDropHandler {
         int minutes = Config.DEATH_DESPAWN_MINUTES.get();
 
         for (ItemEntity item : event.getDrops()) {
-            String itemId = ForgeRegistries.ITEMS.getKey(item.getItem().getItem()).toString();
+            ResourceLocation key = ForgeRegistries.ITEMS.getKey(item.getItem().getItem());
+            String itemId = key != null ? key.toString() : null;
+
             item.lifespan = Config.resolveLifespan(itemId, infinite, minutes);
             item.getPersistentData().putBoolean(DEATH_DROP_TAG, true);
         }
 
         if (!event.getDrops().isEmpty()) {
-            String label = infinite ? "infinite" : minutes + " min";
-            DespawnTimerMod.LOGGER.debug("{} died, extended {} item(s) to {}",
-                player.getName().getString(), event.getDrops().size(), label);
+            DespawnTimerMod.LOGGER.debug("{} died, set despawn on {} item(s)",
+                player.getName().getString(), event.getDrops().size());
         }
     }
 }

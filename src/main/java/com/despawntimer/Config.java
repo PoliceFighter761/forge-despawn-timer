@@ -1,6 +1,7 @@
 package com.despawntimer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +86,9 @@ public class Config {
     }
 
     public static int getItemOverride(String itemId) {
+        if (itemId == null)
+            return 0;
+
         return overrideCache.getOrDefault(itemId, 0);
     }
 
@@ -129,7 +133,7 @@ public class Config {
             }
         }
 
-        overrideCache = map;
+        overrideCache = Collections.unmodifiableMap(map);
     }
 
     public static void onConfigLoad() {

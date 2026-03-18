@@ -213,11 +213,11 @@ public class DespawnTimerCommand {
     private static int showHelp(CommandSourceStack source) {
         source.sendSuccess(() -> tag()
             .append(Component.literal("Commands:\n").withStyle(ChatFormatting.WHITE))
-            .append(Component.literal("  /despawntimer players get|set|reset|infinite\n").withStyle(ChatFormatting.YELLOW))
+            .append(Component.literal("  /despawntimer players get|set <min>|reset|infinite\n").withStyle(ChatFormatting.YELLOW))
             .append(Component.literal("    Death drop timer (default 60 min)\n").withStyle(ChatFormatting.GRAY))
-            .append(Component.literal("  /despawntimer global get|set|reset|infinite\n").withStyle(ChatFormatting.YELLOW))
+            .append(Component.literal("  /despawntimer global get|set <min>|reset|infinite\n").withStyle(ChatFormatting.YELLOW))
             .append(Component.literal("    All other items (default 5 min)\n").withStyle(ChatFormatting.GRAY))
-            .append(Component.literal("  /despawntimer item <id> get|set|reset|infinite\n").withStyle(ChatFormatting.YELLOW))
+            .append(Component.literal("  /despawntimer item <id> get|set <min>|reset|infinite\n").withStyle(ChatFormatting.YELLOW))
             .append(Component.literal("    Per-item override (highest priority)").withStyle(ChatFormatting.GRAY)),
             false);
 
