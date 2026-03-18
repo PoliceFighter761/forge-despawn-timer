@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class DeathDropHandler {
     static final String DEATH_DROP_TAG = "despawntimer_death";
@@ -15,17 +16,19 @@ public class DeathDropHandler {
             return;
         }
 
+        boolean infinite = Config.DEATH_DESPAWN_INFINITE.get();
         int minutes = Config.DEATH_DESPAWN_MINUTES.get();
-        int ticks = minutes * 60 * 20;
 
         for (ItemEntity item : event.getDrops()) {
-            item.lifespan = ticks;
+            String itemId = ForgeRegistries.ITEMS.getKey(item.getItem().getItem()).toString();
+            item.lifespan = Config.resolveLifespan(itemId, infinite, minutes);
             item.getPersistentData().putBoolean(DEATH_DROP_TAG, true);
         }
 
         if (!event.getDrops().isEmpty()) {
-            DespawnTimerMod.LOGGER.debug("{} died, extended {} item(s) to {} min",
-                player.getName().getString(), event.getDrops().size(), minutes);
+            String label = infinite ? "infinite" : minutes + " min";
+            DespawnTimerMod.LOGGER.debug("{} died, extended {} item(s) to {}",
+                player.getName().getString(), event.getDrops().size(), label);
         }
     }
 }

@@ -6,6 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,5 +27,15 @@ public class DespawnTimerMod {
     @SubscribeEvent
     public void onRegisterCommands(RegisterCommandsEvent event) {
         DespawnTimerCommand.register(event.getDispatcher());
+    }
+
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class ModEvents {
+        @SubscribeEvent
+        public static void onConfigLoad(ModConfigEvent event) {
+            if (event.getConfig().getSpec() == Config.SERVER_SPEC) {
+                Config.onConfigLoad();
+            }
+        }
     }
 }

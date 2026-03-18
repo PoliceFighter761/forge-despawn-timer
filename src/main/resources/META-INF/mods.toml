@@ -8,10 +8,8 @@ version="${file.jarVersion}"
 displayName="Despawn Timer"
 authors="DespawnTimer"
 description='''
-Extends the despawn timer for items dropped on player death.
-Manual drops, breaking blocks, mob loot, etc. are unaffected.
-
-Default: 60 minutes (configurable 5-1440 via /despawntimer command).
+Configurable despawn timers for items. Death drops, global items, and per-item overrides.
+Supports timed values (1-1440 min) or infinite. All configurable via /despawntimer.
 '''
 
 [[dependencies.despawntimer]]
