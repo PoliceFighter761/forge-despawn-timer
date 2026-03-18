@@ -56,7 +56,7 @@ First build downloads Minecraft + Forge (~5-15 min).
 
 The compiled JAR is output to:
 ```
-build/libs/despawn-timer-1.0.0.jar
+build/libs/despawn-timer-*.*.*.jar
 ```
 
 ### 2. Install

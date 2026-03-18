@@ -93,8 +93,7 @@ public class DespawnTimerCommand {
     }
 
     private static int setCategory(CommandSourceStack source, String label, ForgeConfigSpec.IntValue minutesCfg, ForgeConfigSpec.BooleanValue infiniteCfg, int minutes) {
-        minutesCfg.set(minutes);
-        infiniteCfg.set(false);
+        Config.setCategoryMinutes(minutesCfg, infiniteCfg, minutes);
 
         source.sendSuccess(() -> tag()
             .append(Component.literal(label + " despawn set to ").withStyle(ChatFormatting.WHITE))
@@ -106,7 +105,7 @@ public class DespawnTimerCommand {
     }
 
     private static int setInfinite(CommandSourceStack source, String label, ForgeConfigSpec.BooleanValue infiniteCfg) {
-        infiniteCfg.set(true);
+        Config.setCategoryInfinite(infiniteCfg);
 
         source.sendSuccess(() -> tag()
             .append(Component.literal(label + " despawn set to ").withStyle(ChatFormatting.WHITE))

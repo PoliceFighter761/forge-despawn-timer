@@ -99,7 +99,19 @@ public class Config {
         list.add(itemId + "=" + value);
 
         ITEM_OVERRIDES.set(list);
+        SERVER_SPEC.save();
         rebuildCache();
+    }
+
+    public static void setCategoryMinutes(ForgeConfigSpec.IntValue minutesCfg, ForgeConfigSpec.BooleanValue infiniteCfg, int minutes) {
+        minutesCfg.set(minutes);
+        infiniteCfg.set(false);
+        SERVER_SPEC.save();
+    }
+
+    public static void setCategoryInfinite(ForgeConfigSpec.BooleanValue infiniteCfg) {
+        infiniteCfg.set(true);
+        SERVER_SPEC.save();
     }
 
     public static boolean removeItemOverride(String itemId) {
@@ -108,6 +120,7 @@ public class Config {
 
         if (removed) {
             ITEM_OVERRIDES.set(list);
+            SERVER_SPEC.save();
             rebuildCache();
         }
 

@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class DeathDropHandler {
-    static final String DEATH_DROP_TAG = "despawntimer_death";
+    static final String DEATH_DROP_TAG = "despawntimer:death_drop";
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onPlayerDeathDrops(LivingDropsEvent event) {
