@@ -1,16 +1,17 @@
 # Despawn Timer
 
-Extends the despawn timer for items dropped on player death. Manual drops, breaking blocks, mob loot, block drops are all unaffected.
+Controls item despawn timers on your server. Two independent timers:
 
-Default is 60 minutes. Configurable 5–1440 minutes via `/despawntimer`.
+- Player death drops: 60 minutes by default (configurable 5–1440)
+- Everything else: 5 minutes by default / vanilla (configurable 1–1440)
 
 ---
 
 ## How it works
 
-When the dying entity is a `Player`, it sets `itemEntity.lifespan` on each drop to the configured tick count. Forge replaces the vanilla hardcoded `age >= 6000` check with `age >= lifespan`, so this extends the timer for exactly those items and nothing else.
+Each item's `lifespan` field is set to the configured value. Items are tagged with NBT so the global handler knows to skip them. Any `ItemEntity` without the death-drop tag gets the global timer applied.
 
-The `keepInventory` gamerule is handled implicitly because if items aren't dropped, the drops list is empty.
+The timer works through Forge's `lifespan` field on `ItemEntity`, which replaces the vanilla hardcoded `age >= 6000` despawn check.
 
 ---
 
@@ -20,11 +21,14 @@ Requires OP level 2.
 
 | Command | Effect |
 |---|---|
-| `/despawntimer get` | Show current timer |
-| `/despawntimer set <minutes>` | Set timer (5–1440) |
-| `/despawntimer reset` | Reset to the default (60 min) |
+| `/despawntimer players get` | Show death drop timer |
+| `/despawntimer players set <minutes>` | Set death drop timer (5–1440) |
+| `/despawntimer players reset` | Reset to 60 min |
+| `/despawntimer global get` | Show global item timer |
+| `/despawntimer global set <minutes>` | Set global timer (1–1440) |
+| `/despawntimer global reset` | Reset to 5 min (vanilla) |
 
-Changes persist to the server config file (`<world>/serverconfig/despawntimer-server.toml`).
+Changes persist to `<world>/serverconfig/despawntimer-server.toml`.
 
 ---
 
@@ -55,7 +59,7 @@ Copy the JAR from `build/libs/` into your server's `mods/` folder. Server-side o
 ## Compatibility notes
 
 ### Other mods (Curios, etc.)?
-If they add to the `LivingDropsEvent` drops list (standard practice), those items get the extended timer too.
+If they add to the `LivingDropsEvent` drops list (standard practice), those items get the death drop timer.
 
 ### Gravestone mod installed?
-If it cancels `LivingDropsEvent`, our handler doesn't run. That's fine because then the other mod is handling those items.
+If it cancels `LivingDropsEvent`, the death drop handler doesn't run. The gravestone mod handles those items instead.

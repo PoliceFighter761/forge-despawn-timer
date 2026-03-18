@@ -20,6 +20,7 @@ public class DespawnTimerMod {
         );
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(DeathDropHandler.class);
+        MinecraftForge.EVENT_BUS.register(GlobalDropHandler.class);
     }
 
     @SubscribeEvent

@@ -7,61 +7,56 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.ChatFormatting;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class DespawnTimerCommand {
-    private static final int DEFAULT_MINUTES = 60;
-
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
             Commands.literal("despawntimer")
                 .requires(source -> source.hasPermission(2))
-                .then(Commands.literal("get")
-                    .executes(ctx -> getTimer(ctx.getSource()))
+                .then(Commands.literal("players")
+                    .then(Commands.literal("get")
+                        .executes(ctx -> get(ctx.getSource(), "players", Config.DEATH_DESPAWN_MINUTES)))
+                    .then(Commands.literal("set")
+                        .then(Commands.argument("minutes", IntegerArgumentType.integer(5, 1440))
+                            .executes(ctx -> set(ctx.getSource(), "players", Config.DEATH_DESPAWN_MINUTES,
+                                IntegerArgumentType.getInteger(ctx, "minutes")))))
+                    .then(Commands.literal("reset")
+                        .executes(ctx -> set(ctx.getSource(), "players", Config.DEATH_DESPAWN_MINUTES, 60)))
                 )
-                .then(Commands.literal("set")
-                    .then(Commands.argument("minutes", IntegerArgumentType.integer(5, 1440))
-                        .executes(ctx -> setTimer(ctx.getSource(),
-                            IntegerArgumentType.getInteger(ctx, "minutes")))
-                    )
-                )
-                .then(Commands.literal("reset")
-                    .executes(ctx -> resetTimer(ctx.getSource()))
+                .then(Commands.literal("global")
+                    .then(Commands.literal("get")
+                        .executes(ctx -> get(ctx.getSource(), "global", Config.GLOBAL_DESPAWN_MINUTES)))
+                    .then(Commands.literal("set")
+                        .then(Commands.argument("minutes", IntegerArgumentType.integer(5, 1440))
+                            .executes(ctx -> set(ctx.getSource(), "global", Config.GLOBAL_DESPAWN_MINUTES,
+                                IntegerArgumentType.getInteger(ctx, "minutes")))))
+                    .then(Commands.literal("reset")
+                        .executes(ctx -> set(ctx.getSource(), "global", Config.GLOBAL_DESPAWN_MINUTES, 5)))
                 )
                 .executes(ctx -> showHelp(ctx.getSource()))
         );
     }
 
-    private static int getTimer(CommandSourceStack source) {
-        int minutes = Config.DESPAWN_MINUTES.get();
+    private static int get(CommandSourceStack source, String label, ForgeConfigSpec.IntValue config) {
+        int minutes = config.get();
 
         source.sendSuccess(() -> tag()
-            .append(Component.literal("Death items despawn after ").withStyle(ChatFormatting.WHITE))
+            .append(Component.literal(label + " despawn: ").withStyle(ChatFormatting.WHITE))
             .append(Component.literal(fmt(minutes)).withStyle(ChatFormatting.GREEN))
-            .append(Component.literal(" (" + toTicks(minutes) + " ticks).").withStyle(ChatFormatting.GRAY)),
+            .append(Component.literal(" (" + toTicks(minutes) + " ticks)").withStyle(ChatFormatting.GRAY)),
             false);
 
         return minutes;
     }
 
-    private static int setTimer(CommandSourceStack source, int minutes) {
-        Config.DESPAWN_MINUTES.set(minutes);
+    private static int set(CommandSourceStack source, String label, ForgeConfigSpec.IntValue config, int minutes) {
+        config.set(minutes);
 
         source.sendSuccess(() -> tag()
-            .append(Component.literal("Timer set to ").withStyle(ChatFormatting.WHITE))
+            .append(Component.literal(label + " despawn set to ").withStyle(ChatFormatting.WHITE))
             .append(Component.literal(fmt(minutes)).withStyle(ChatFormatting.GREEN))
-            .append(Component.literal(" (" + toTicks(minutes) + " ticks).").withStyle(ChatFormatting.GRAY)),
-            true);
-
-        return 1;
-    }
-
-    private static int resetTimer(CommandSourceStack source) {
-        Config.DESPAWN_MINUTES.set(DEFAULT_MINUTES);
-
-        source.sendSuccess(() -> tag()
-            .append(Component.literal("Timer reset to ").withStyle(ChatFormatting.WHITE))
-            .append(Component.literal(fmt(DEFAULT_MINUTES)).withStyle(ChatFormatting.GREEN))
-            .append(Component.literal(".").withStyle(ChatFormatting.GRAY)),
+            .append(Component.literal(" (" + toTicks(minutes) + " ticks)").withStyle(ChatFormatting.GRAY)),
             true);
 
         return 1;
@@ -70,12 +65,10 @@ public class DespawnTimerCommand {
     private static int showHelp(CommandSourceStack source) {
         source.sendSuccess(() -> tag()
             .append(Component.literal("Commands:\n").withStyle(ChatFormatting.WHITE))
-            .append(Component.literal("  /despawntimer get").withStyle(ChatFormatting.YELLOW))
-            .append(Component.literal(" - Show current timer\n").withStyle(ChatFormatting.GRAY))
-            .append(Component.literal("  /despawntimer set <minutes>").withStyle(ChatFormatting.YELLOW))
-            .append(Component.literal(" - Set timer (5-1440)\n").withStyle(ChatFormatting.GRAY))
-            .append(Component.literal("  /despawntimer reset").withStyle(ChatFormatting.YELLOW))
-            .append(Component.literal(" - Reset to 60 min").withStyle(ChatFormatting.GRAY)),
+            .append(Component.literal("  /despawntimer players get|set|reset\n").withStyle(ChatFormatting.YELLOW))
+            .append(Component.literal("    Death drop timer (default 60 min)\n").withStyle(ChatFormatting.GRAY))
+            .append(Component.literal("  /despawntimer global get|set|reset\n").withStyle(ChatFormatting.YELLOW))
+            .append(Component.literal("    All other items (default 5 min)").withStyle(ChatFormatting.GRAY)),
             false);
 
         return 1;
